@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ahorro con Metas — MVP y Documentación</title>
+  <meta name="description" content="Calculadora de ahorro con metas — HTML5, CSS3 y JavaScript (MVP) + documentación del proyecto." />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{--bg:#071022; --card:#0b1220; --accent:#2dd4bf; --muted:#94a3b8; --glass:rgba(255,255,255,0.04); --radius:12px; --max-width:1200px; font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; background:linear-gradient(180deg,#071022 0%, #071829 80%); color:#e6eef6; padding:18px; display:flex; justify-content:center}
+    .layout{width:100%; max-width:var(--max-width)}
+    header{display:flex; align-items:center; gap:14px}
+    .logo{width:56px; height:56px; border-radius:10px; background:linear-gradient(135deg,var(--accent),#60a5fa); display:flex; align-items:center; justify-content:center; font-weight:800; color:#042024}
+    h1{margin:0;font-size:20px}
+    nav{margin-top:12px; display:flex; gap:8px; flex-wrap:wrap}
+    nav a{padding:8px 12px; border-radius:999px; background:rgba(255,255,255,0.02); color:var(--muted); text-decoration:none; font-size:13px}
+    main{display:grid; grid-template-columns: 320px 1fr; gap:18px; margin-top:16px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; padding:16px; box-shadow: 0 6px 18px rgba(2,6,23,0.6)}
+    .sidebar{position:sticky; top:18px; align-self:start}
+    .section{margin-bottom:18px}
+    h2{margin:0 0 8px 0}
+    p.lead{color:var(--muted); margin:0 0 12px}
+    label{font-size:13px;color:var(--muted)}
+    input, textarea, select{width:100%; padding:10px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.06); color:inherit}
+    table{width:100%; border-collapse:collapse; font-size:13px}
+    th,td{padding:8px; border-bottom:1px dashed rgba(255,255,255,0.03); text-align:left}
+    th{color:var(--muted)}
+    footer{color:var(--muted); font-size:13px; margin-top:14px}
+    @media (max-width:980px){ main{grid-template-columns:1fr} .sidebar{position:static} }
+    .small{font-size:13px;color:var(--muted)}
+    .actions{display:flex; gap:8px}
+    .btn{padding:8px 10px; border-radius:8px; border:0; cursor:pointer}
+    .btn-primary{background:var(--accent); color:#042024; font-weight:700}
+    .btn-ghost{background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <header>
+      <div class="logo">AC</div>
+      <div>
+        <h1>Ahorro con Metas</h1>
+        <nav aria-label="Menú principal">
+          <a href="#infoGeneral">Información General</a>
+          <a href="#contexto">Descripción del Contexto</a>
+          <a href="#formularios">Formularios de Datos</a>
+          <a href="#productoDatos">El Producto de Datos</a>
+          <a href="#nosotros">Nosotros</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- SIDEBAR: resumen y navegación rápida -->
+      <aside class="sidebar">
+        <div class="card">
+          <h3>Resumen rápido</h3>
+          <p class="small">Proyecto académico: <strong>Ahorro con Metas</strong>. Solución para planificar objetivos de ahorro personales con cálculos automáticos y visualización mes a mes. Basado en los documentos de la Universidad Libre Seccional Cali (parciales y protocolos).</p>
+          <hr>
+          <div class="small"><strong> </strong> </div>
+          <div class="small"><strong> </strong> </div>
+          <div style="height:8px"></div>
+        </div>
+      </aside>
+
+      <!-- CONTENIDO PRINCIPAL -->
+      <section style="min-height:400px">
+
+        <article id="infoGeneral" class="card section">
+          <h2>Información General</h2>
+          <p class="lead">Ahorro con Metas es una aplicación educativa que ayuda a usuarios a definir metas de ahorro, calcular el aporte mensual requerido (con/sin interés compuesto) y visualizar la evolución del saldo mes a mes. Está pensada como herramienta para mejorar la educación financiera personal y facilitar la toma de decisiones.</p>
+        </article>
+
+        <article id="contexto" class="card section">
+          <h2>Descripción del Contexto</h2>
+          <h3>El sector</h3>
+          <p class="small">Sector terciario, área financiera. Incluye bancos, cooperativas, fintech y servicios de educación financiera. En Colombia, el sector financiero es un motor clave de inclusión y del crecimiento económico regional.</p>
+            <br>
+
+            <br>
+          <h3>Su importancia</h3>
+          <p class="small">Este sector es crucial para el desarrollo económico, ya que impulsa la inversión, el consumo y el ahorro. Contribuye al crecimiento del empleo, financia proyectos de infraestructura y da soporte al sistema de pagos. Su estabilidad es fundamental para la confianza de los inversionistas y la ciudadanía.</p>
+            <br>
+
+            <br>
+          <h3>Impacto en la región</h3>
+          <p class="small">Tanto a nivel nacional como regional en departamentos como EL Valle del Cauca , herramientas de educación financiera pueden mejorar acceso a productos de ahorro, incentivar emprendimiento y reducir la fragilidad financiera de hogares en estratos medios y bajos.</p>
+            <br>
+
+            <br>
+          <h3>Productos</h3>
+          <p class="small">La solución propuesta es una aplicación tanto de escritorio como web: "Ahorro con Metas" que permite crear metas con monto objetivo, plazo y opción de aplicar interés compuesto.</p>
+            <br>
+
+            <br>
+          <h3>Servicios</h3>
+          <p class="small">Servicios que apoya: planificación financiera personal, simulación de escenarios, visualización de progreso, educación financiera básica.</p>
+            <br>
+            <br>
+          <h3>Necesidad - problema - idea de transformación</h3>
+          <p class="small">Problema: muchos usuarios no tienen herramientas sencillas para cuantificar y visualizar cómo alcanzar metas de ahorro. Idea: transformar la educación financiera ofreciendo una herramienta simple, local y replicable que facilite la toma de decisiones y fomente el hábito del ahorro.</p>
+        </article>
+
+        <article id="dataset" class="card section">
+          <h2>Obtención del Dataset</h2>
+          <p class="lead">Documentación del proceso de obtención de datos y pruebas . Aquí se describe cómo se registraron y generaron los datos de prueba usados.</p>
+          <h4>Fuentes / método de obtención</h4>
+
+
+          
+          <ul class="small">
+            <li>Datos de usuario generados manualmente en pruebas .</li>
+            <li>Simulaciones realizadas por el algoritmo interno para cada meta.</li>
+        
+          </ul>
+          <h4>Documentación </h4>
+
+                  <img src="foto.jpg" 
+     alt="datasets" 
+     width="400" 
+     height="300"
+     title="dataset">
+
+                       <img src="foto2.jpg" 
+     alt="datasets" 
+     width="400" 
+     height="300"
+     title="dataset">
+
+
+        </article>
+
+
+
+        
+        <article id="descDataset" class="card section">
+          <h2>Descripción del Dataset</h2>
+          <h4>Composición</h4>
+          <p class="small">Conjunto de registros donde cada registro representa una meta de ahorro. Para cada meta se generan n filas (una por mes) con aportes y saldos acumulados.</p>
+          <h4>Información general / Origen</h4>
+          <p class="small">Origen: datos de prueba (entrada del usuario) y datos generados por el proceso de simulación del algoritmo. No utiliza datos personales sensibles reales.</p>
+          <h4>Metadatos</h4>
+          <p class="small">Clave: nombre_meta, fecha_creacion, monto_objetivo, meses, interes_mensual, ahorro_mensual, total_aportado, saldo_final, tabla_mes_a_mes (array)</p>
+          <h4>Columnas / atributos</h4>
+          <table>
+            <thead><tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr></thead>
+            <tbody>
+              <tr><td>mes</td><td>int</td><td>Mes del periodo (1..n)</td></tr>
+              <tr><td>aporte</td><td>float</td><td>Aporte mensual calculado</td></tr>
+              <tr><td>saldo</td><td>float</td><td>Saldo acumulado al finalizar el mes</td></tr>
+              <tr><td>intereses</td><td>float</td><td>Intereses acumulados (si aplica)</td></tr>
+            </tbody>
+          </table>
+        </article>
+
+        <article id="formularios" class="card section">
+          <h2>Formularios de Datos</h2>
+          <p class="lead">El sitio incluye un formulario principal para crear metas de ahorro. Campos obligatorios y validaciones están implementados en el frontend (HTML/JS).</p>
+          <h4>Campos del formulario</h4>
+          <ul class="small">
+            <li>Nombre de la meta (texto)</li>
+            <li>Monto objetivo (numérico, COP)</li>
+            <li>Plazo en meses (entero)</li>
+            <li>Aplicar interés (checkbox) y tasa mensual (%)</li>
+          </ul>
+          <h4>Validaciones</h4>
+          <p class="small">Validación de entradas no nulas, valores positivos y rangos razonables para el interés (0-100%). Mensajes de alerta para entradas inválidas.</p>
+        </article>
+
+        <article id="productoDatos" class="card section">
+          <h2>El Producto de Datos</h2>
+          <p class="lead">Producto generado: para cada meta se produce un paquete de datos que incluye el ahorro mensual requerido, la tabla mes a mes y el reporte gráfico. Este producto es útil para análisis personal, educación financiera y como insumo para visualizaciones más avanzadas.</p>
+          <h4>Formatos de salida</h4>
+          <ul class="small">
+            <li>CSV (tabla mes a mes)</li>
+            <li>JSON (registro de la meta y tabla)</li>
+            <li>Gráfica interactiva en la interfaz (Chart.js)</li>
+          </ul>
+        </article>
+
+        <article id="nosotros" class="card section">
+          <h2>Nosotros</h2>
+          <p class="small">Proyecto académico desarrollado por estudiantes de la Universidad Libre Seccional Cali como parte de las asignaturas de Lógica, Algoritmos y Fundamentos de Programación.</p>
+          <p class="small"><strong>Autores:</strong> Samuel Alejandro Ortiz Zambrano · Miguel Ángel Carmona Muñoz</p>
+        </article>
+
+        <!-- APP / Calculadora integrada -->
+        <article id="app" class="card section">
+          <h2>Calculadora - Ahorro con Metas</h2>
+
+          <div style="display:flex; gap:12px; flex-wrap:wrap">
+            <!-- Formulario -->
+            <div style="flex:1; min-width:280px">
+              <form id="metaForm" autocomplete="off">
+                <label>Nombre de la meta *</label>
+                <input id="metaName" name="metaName" type="text" placeholder="Viaje a Medellín" required>
+                <label>Monto objetivo (COP) *</label>
+                <input id="metaAmount" name="metaAmount" type="number" placeholder="2000000" min="1" required>
+                <label>Plazo (meses) *</label>
+                <input id="metaMonths" name="metaMonths" type="number" placeholder="12" min="1" required>
+                <label><input id="useInterest" type="checkbox"> Aplicar interés mensual</label>
+                <input id="interestRate" type="number" placeholder="% mensual" min="0" max="100" disabled>
+                <div style="margin-top:10px; display:flex; gap:8px">
+                  <button class="btn btn-primary" type="submit">Calcular y guardar</button>
+                  <button class="btn btn-ghost" type="button" id="clearForm">Limpiar</button>
+                </div>
+              </form>
+
+              <!-- Lista de metas guardadas -->
+              <h4>Mis metas</h4>
+              <div id="metasList" class="small">No hay metas — crea una.</div>
+            </div>
+
+            <!-- Resultados -->
+            <div style="flex:1; min-width:320px">
+              <div class="card small" id="resultCard">
+                <div id="resultTitle">Sin meta seleccionada</div>
+                <div id="resultSub" class="small">Registra una meta para ver el resumen.</div>
+                <div style="margin-top:8px; display:flex; gap:8px">
+                  <div class="small"><strong id="monthlyRequired">—</strong><div>Ahorro mensual</div></div>
+                  <div class="small"><strong id="totalContributed">—</strong><div>Total aportado</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px" class="card">
+            <strong>Tabla mes a mes</strong>
+            <div id="tableContainer">—</div>
+          </div>
+
+          <div style="margin-top:12px" class="card">
+            <strong>Gráfica</strong>
+            <canvas id="chartCanvas" style="width:100%; height:240px"></canvas>
+          </div>
+
+          <div style="margin-top:8px; display:flex; gap:8px">
+            <button class="btn btn-ghost" id="exportCsv">Exportar CSV</button>
+            <button class="btn btn-ghost" id="deleteMeta" style="color:#ef4444">Eliminar</button>
+          </div>
+        </article>
