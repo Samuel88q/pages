@@ -15,13 +15,26 @@
     header{display:flex; align-items:center; gap:14px}
     .logo{width:56px; height:56px; border-radius:10px; background:linear-gradient(135deg,var(--accent),#60a5fa); display:flex; align-items:center; justify-content:center; font-weight:800; color:#042024}
     h1{margin:0;font-size:20px}
-    nav{margin-top:12px; display:flex; gap:8px; flex-wrap:wrap}
-    nav a{padding:8px 12px; border-radius:999px; background:rgba(255,255,255,0.02); color:var(--muted); text-decoration:none; font-size:13px}
+    nav{margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; position:relative}
+    nav a{padding:8px 12px; border-radius:999px; background:rgba(255,255,255,0.02); color:var(--muted); text-decoration:none; font-size:13px; transition: all 0.2s}
+    nav a:hover{background:rgba(255,255,255,0.08); color:#e6eef6}
+    
+    .dropdown{position:relative; display:inline-block}
+    .dropdown-toggle{cursor:pointer; display:flex; align-items:center; gap:4px}
+    .dropdown-toggle::after{content:'▼'; font-size:10px; transition:transform 0.2s}
+    .dropdown.active .dropdown-toggle::after{transform:rotate(180deg)}
+    .dropdown-menu{position:absolute; top:calc(100% + 4px); left:0; background:linear-gradient(180deg, rgba(11,18,32,0.98), rgba(7,16,34,0.98)); border:1px solid rgba(255,255,255,0.1); border-radius:8px; min-width:160px; padding:6px; opacity:0; visibility:hidden; transform:translateY(-10px); transition:all 0.2s; z-index:1000; box-shadow:0 8px 24px rgba(2,6,23,0.8)}
+    .dropdown.active .dropdown-menu{opacity:1; visibility:visible; transform:translateY(0)}
+    .dropdown-menu a{display:block; padding:8px 12px; border-radius:6px; color:var(--muted); text-decoration:none; font-size:13px; transition:all 0.2s}
+    .dropdown-menu a:hover{background:rgba(45,212,191,0.1); color:var(--accent)}
+    
     main{display:grid; grid-template-columns: 320px 1fr; gap:18px; margin-top:16px}
     .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; padding:16px; box-shadow: 0 6px 18px rgba(2,6,23,0.6)}
     .sidebar{position:sticky; top:18px; align-self:start}
     .section{margin-bottom:18px}
     h2{margin:0 0 8px 0}
+    h3{margin:12px 0 6px 0; font-size:16px}
+    h4{margin:12px 0 6px 0; font-size:14px; color:var(--accent)}
     p.lead{color:var(--muted); margin:0 0 12px}
     label{font-size:13px;color:var(--muted)}
     input, textarea, select{width:100%; padding:10px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.06); color:inherit}
@@ -35,6 +48,20 @@
     .btn{padding:8px 10px; border-radius:8px; border:0; cursor:pointer}
     .btn-primary{background:var(--accent); color:#042024; font-weight:700}
     .btn-ghost{background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--muted)}
+    
+    .tool-icon{width:40px; height:40px; border-radius:8px; background:linear-gradient(135deg, var(--accent), #60a5fa); display:flex; align-items:center; justify-content:center; font-weight:700; color:#042024; margin-bottom:12px}
+    .tool-card{background:linear-gradient(135deg, rgba(45,212,191,0.05), rgba(96,165,250,0.05)); border:1px solid rgba(45,212,191,0.2); padding:20px; border-radius:12px; margin-bottom:16px}
+    .code-block{background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:16px; font-family:monospace; font-size:12px; overflow-x:auto; margin:12px 0}
+    
+    .page-hidden{display:none}
+    .chart-container{position:relative; height:400px; margin:16px 0}
+    .loading{text-align:center; padding:40px; color:var(--muted)}
+    .error{background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:12px; color:#fca5a5; font-size:13px}
+    .success{background:rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.3); border-radius:8px; padding:12px; color:var(--accent); font-size:13px}
+    .stat-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:12px; margin:16px 0}
+    .stat-card{background:rgba(45,212,191,0.05); border:1px solid rgba(45,212,191,0.2); border-radius:8px; padding:16px; text-align:center}
+    .stat-value{font-size:24px; font-weight:700; color:var(--accent); margin:8px 0}
+    .stat-label{font-size:12px; color:var(--muted); text-transform:uppercase}
   </style>
 </head>
 <body>
@@ -44,201 +71,660 @@
       <div>
         <h1>Ahorro con Metas</h1>
         <nav aria-label="Menú principal">
-          <a href="#infoGeneral">Información General</a>
-          <a href="#contexto">Descripción del Contexto</a>
-          <a href="#formularios">Formularios de Datos</a>
-          <a href="#productoDatos">El Producto de Datos</a>
-          <a href="#nosotros">Nosotros</a>
+          <a href="#" onclick="showPage('home'); return false;">Información General</a>
+          <a href="#" onclick="showPage('dataset'); return false;">Dataset</a>
+          <a href="#" onclick="showPage('api'); return false;">API Datos Abiertos</a>
+          <a href="#" onclick="showPage('contexto'); return false;">Contexto</a>
+          <a href="#" onclick="showPage('formularios'); return false;">Formularios</a>
+          <a href="#" onclick="showPage('producto'); return false;">Producto</a>
+          
+          <div class="dropdown" id="datosDropdown">
+            <a class="dropdown-toggle" onclick="toggleDropdown(); return false;">
+              Datos
+            </a>
+            <div class="dropdown-menu">
+              <a href="#" onclick="showPage('python'); return false;">Python</a>
+              <a href="#" onclick="showPage('powerbi'); return false;">Power BI</a>
+              <a href="#" onclick="showPage('looker'); return false;">Looker Studio</a>
+            </div>
+          </div>
+          
+          <a href="#" onclick="showPage('nosotros'); return false;">Nosotros</a>
         </nav>
       </div>
     </header>
 
     <main>
-      <!-- SIDEBAR: resumen y navegación rápida -->
+      <!-- SIDEBAR -->
       <aside class="sidebar">
         <div class="card">
           <h3>Resumen rápido</h3>
-          <p class="small">Proyecto académico: <strong>Ahorro con Metas</strong>. Solución para planificar objetivos de ahorro personales con cálculos automáticos y visualización mes a mes. Basado en los documentos de la Universidad Libre Seccional Cali (parciales y protocolos).</p>
-          <hr>
-          <div class="small"><strong> </strong> </div>
-          <div class="small"><strong> </strong> </div>
-          <div style="height:8px"></div>
+          <p class="small">Proyecto académico: <strong>Ahorro con Metas</strong>. Solución para planificar objetivos de ahorro personales con cálculos automáticos y visualización mes a mes.</p>
+          <hr style="border:0; border-top:1px solid rgba(255,255,255,0.06); margin:12px 0">
+          <p class="small">Universidad Libre Seccional Cali</p>
         </div>
       </aside>
 
       <!-- CONTENIDO PRINCIPAL -->
       <section style="min-height:400px">
-
-        <article id="infoGeneral" class="card section">
-          <h2>Información General</h2>
-          <p class="lead">Ahorro con Metas es una aplicación educativa que ayuda a usuarios a definir metas de ahorro, calcular el aporte mensual requerido (con/sin interés compuesto) y visualizar la evolución del saldo mes a mes. Está pensada como herramienta para mejorar la educación financiera personal y facilitar la toma de decisiones.</p>
-        </article>
-
-        <article id="contexto" class="card section">
-          <h2>Descripción del Contexto</h2>
-          <h3>El sector</h3>
-          <p class="small">Sector terciario, área financiera. Incluye bancos, cooperativas, fintech y servicios de educación financiera. En Colombia, el sector financiero es un motor clave de inclusión y del crecimiento económico regional.</p>
-            <br>
-
-            <br>
-          <h3>Su importancia</h3>
-          <p class="small">Este sector es crucial para el desarrollo económico, ya que impulsa la inversión, el consumo y el ahorro. Contribuye al crecimiento del empleo, financia proyectos de infraestructura y da soporte al sistema de pagos. Su estabilidad es fundamental para la confianza de los inversionistas y la ciudadanía.</p>
-            <br>
-
-            <br>
-          <h3>Impacto en la región</h3>
-          <p class="small">Tanto a nivel nacional como regional en departamentos como EL Valle del Cauca , herramientas de educación financiera pueden mejorar acceso a productos de ahorro, incentivar emprendimiento y reducir la fragilidad financiera de hogares en estratos medios y bajos.</p>
-            <br>
-
-            <br>
-          <h3>Productos</h3>
-          <p class="small">La solución propuesta es una aplicación tanto de escritorio como web: "Ahorro con Metas" que permite crear metas con monto objetivo, plazo y opción de aplicar interés compuesto.</p>
-            <br>
-
-            <br>
-          <h3>Servicios</h3>
-          <p class="small">Servicios que apoya: planificación financiera personal, simulación de escenarios, visualización de progreso, educación financiera básica.</p>
-            <br>
-            <br>
-          <h3>Necesidad - problema - idea de transformación</h3>
-          <p class="small">Problema: muchos usuarios no tienen herramientas sencillas para cuantificar y visualizar cómo alcanzar metas de ahorro. Idea: transformar la educación financiera ofreciendo una herramienta simple, local y replicable que facilite la toma de decisiones y fomente el hábito del ahorro.</p>
-        </article>
-
-        <article id="dataset" class="card section">
-          <h2>Obtención del Dataset</h2>
-          <p class="lead">Documentación del proceso de obtención de datos y pruebas . Aquí se describe cómo se registraron y generaron los datos de prueba usados.</p>
-          <h4>Fuentes / método de obtención</h4>
-
-
-          
-          <ul class="small">
-            <li>Datos de usuario generados manualmente en pruebas .</li>
-            <li>Simulaciones realizadas por el algoritmo interno para cada meta.</li>
         
-          </ul>
-          <h4>Documentación </h4>
+        <!-- PÁGINA HOME -->
+        <div id="page-home">
+          <article class="card section">
+            <h2>Información General</h2>
+            <p class="lead">Ahorro con Metas es una aplicación educativa que ayuda a usuarios a definir metas de ahorro, calcular el aporte mensual requerido (con/sin interés compuesto) y visualizar la evolución del saldo mes a mes. Está pensada como herramienta para mejorar la educación financiera personal y facilitar la toma de decisiones.</p>
+            
+            <h3>El producto</h3>
+            <p class="small">La solución propuesta es una aplicación tanto de escritorio como web: "Ahorro con Metas" que permite crear metas con monto objetivo, plazo y opción de aplicar interés compuesto.</p>
+            
+            <h3>Servicios</h3>
+            <p class="small">Servicios que apoya: planificación financiera personal, simulación de escenarios, visualización de progreso, educación financiera básica.</p>
+            
+            <h3>Características principales</h3>
+            <ul class="small">
+              <li>Cálculo automático de ahorro mensual necesario</li>
+              <li>Simulación con/sin interés compuesto</li>
+              <li>Tabla detallada mes a mes del progreso</li>
+              <li>Visualizaciones gráficas interactivas</li>
+              <li>Exportación de datos en múltiples formatos</li>
+            </ul>
+          </article>
+        </div>
 
-                  <img src="foto.jpg" 
-     alt="datasets" 
-     width="400" 
-     height="300"
-     title="dataset">
-
-                       <img src="foto2.jpg" 
-     alt="datasets" 
-     width="400" 
-     height="300"
-     title="dataset">
-
-
-        </article>
-
-
-
-        
-        <article id="descDataset" class="card section">
-          <h2>Descripción del Dataset</h2>
-          <h4>Composición</h4>
-          <p class="small">Conjunto de registros donde cada registro representa una meta de ahorro. Para cada meta se generan n filas (una por mes) con aportes y saldos acumulados.</p>
-          <h4>Información general / Origen</h4>
-          <p class="small">Origen: datos de prueba (entrada del usuario) y datos generados por el proceso de simulación del algoritmo. No utiliza datos personales sensibles reales.</p>
-          <h4>Metadatos</h4>
-          <p class="small">Clave: nombre_meta, fecha_creacion, monto_objetivo, meses, interes_mensual, ahorro_mensual, total_aportado, saldo_final, tabla_mes_a_mes (array)</p>
-          <h4>Columnas / atributos</h4>
-          <table>
-            <thead><tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr></thead>
-            <tbody>
-              <tr><td>mes</td><td>int</td><td>Mes del periodo (1..n)</td></tr>
-              <tr><td>aporte</td><td>float</td><td>Aporte mensual calculado</td></tr>
-              <tr><td>saldo</td><td>float</td><td>Saldo acumulado al finalizar el mes</td></tr>
-              <tr><td>intereses</td><td>float</td><td>Intereses acumulados (si aplica)</td></tr>
-            </tbody>
-          </table>
-        </article>
-
-        <article id="formularios" class="card section">
-          <h2>Formularios de Datos</h2>
-          <p class="lead">El sitio incluye un formulario principal para crear metas de ahorro. Campos obligatorios y validaciones están implementados en el frontend (HTML/JS).</p>
-          <h4>Campos del formulario</h4>
-          <ul class="small">
-            <li>Nombre de la meta (texto)</li>
-            <li>Monto objetivo (numérico, COP)</li>
-            <li>Plazo en meses (entero)</li>
-            <li>Aplicar interés (checkbox) y tasa mensual (%)</li>
-          </ul>
-          <h4>Validaciones</h4>
-          <p class="small">Validación de entradas no nulas, valores positivos y rangos razonables para el interés (0-100%). Mensajes de alerta para entradas inválidas.</p>
-        </article>
-
-        <article id="productoDatos" class="card section">
-          <h2>El Producto de Datos</h2>
-          <p class="lead">Producto generado: para cada meta se produce un paquete de datos que incluye el ahorro mensual requerido, la tabla mes a mes y el reporte gráfico. Este producto es útil para análisis personal, educación financiera y como insumo para visualizaciones más avanzadas.</p>
-          <h4>Formatos de salida</h4>
-          <ul class="small">
-            <li>CSV (tabla mes a mes)</li>
-            <li>JSON (registro de la meta y tabla)</li>
-            <li>Gráfica interactiva en la interfaz (Chart.js)</li>
-          </ul>
-        </article>
-
-        <article id="nosotros" class="card section">
-          <h2>Nosotros</h2>
-          <p class="small">Proyecto académico desarrollado por estudiantes de la Universidad Libre Seccional Cali como parte de las asignaturas de Lógica, Algoritmos y Fundamentos de Programación.</p>
-          <p class="small"><strong>Autores:</strong> Samuel Alejandro Ortiz Zambrano · Miguel Ángel Carmona Muñoz</p>
-        </article>
-
-        <!-- APP / Calculadora integrada -->
-        <article id="app" class="card section">
-          <h2>Calculadora - Ahorro con Metas</h2>
-
-          <div style="display:flex; gap:12px; flex-wrap:wrap">
-            <!-- Formulario -->
-            <div style="flex:1; min-width:280px">
-              <form id="metaForm" autocomplete="off">
-                <label>Nombre de la meta *</label>
-                <input id="metaName" name="metaName" type="text" placeholder="Viaje a Medellín" required>
-                <label>Monto objetivo (COP) *</label>
-                <input id="metaAmount" name="metaAmount" type="number" placeholder="2000000" min="1" required>
-                <label>Plazo (meses) *</label>
-                <input id="metaMonths" name="metaMonths" type="number" placeholder="12" min="1" required>
-                <label><input id="useInterest" type="checkbox"> Aplicar interés mensual</label>
-                <input id="interestRate" type="number" placeholder="% mensual" min="0" max="100" disabled>
-                <div style="margin-top:10px; display:flex; gap:8px">
-                  <button class="btn btn-primary" type="submit">Calcular y guardar</button>
-                  <button class="btn btn-ghost" type="button" id="clearForm">Limpiar</button>
-                </div>
-              </form>
-
-              <!-- Lista de metas guardadas -->
-              <h4>Mis metas</h4>
-              <div id="metasList" class="small">No hay metas — crea una.</div>
+        <!-- PÁGINA DATASET -->
+        <div id="page-dataset" class="page-hidden">
+          <article class="card section">
+            <h2>Obtención del Dataset</h2>
+            <p class="lead">Documentación del proceso de obtención de datos y pruebas. Aquí se describe cómo se registraron y generaron los datos de prueba usados.</p>
+            
+            <h4>Fuentes / método de obtención</h4>
+            <ul class="small">
+              <li>Datos de usuario generados manualmente en pruebas</li>
+              <li>Simulaciones realizadas por el algoritmo interno para cada meta</li>
+            </ul>
+            
+            <h4>Documentación visual</h4>
+            <p class="small">A continuación se presentan ejemplos de los datos generados durante las pruebas del sistema:</p>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:16px; margin-top:16px">
+              <img src="foto.jpg" alt="Dataset ejemplo 1" style="width:100%; border-radius:8px; border:1px solid rgba(255,255,255,0.1)" title="Dataset">
+              <img src="foto2.jpg" alt="Dataset ejemplo 2" style="width:100%; border-radius:8px; border:1px solid rgba(255,255,255,0.1)" title="Dataset">
             </div>
+          </article>
 
-            <!-- Resultados -->
-            <div style="flex:1; min-width:320px">
-              <div class="card small" id="resultCard">
-                <div id="resultTitle">Sin meta seleccionada</div>
-                <div id="resultSub" class="small">Registra una meta para ver el resumen.</div>
-                <div style="margin-top:8px; display:flex; gap:8px">
-                  <div class="small"><strong id="monthlyRequired">—</strong><div>Ahorro mensual</div></div>
-                  <div class="small"><strong id="totalContributed">—</strong><div>Total aportado</div></div>
-                </div>
+          <article class="card section">
+            <h2>Descripción del Dataset</h2>
+            
+            <h4>Composición</h4>
+            <p class="small">Conjunto de registros donde cada registro representa una meta de ahorro. Para cada meta se generan n filas (una por mes) con aportes y saldos acumulados.</p>
+            
+            <h4>Información general / Origen</h4>
+            <p class="small">Origen: datos de prueba (entrada del usuario) y datos generados por el proceso de simulación del algoritmo. No utiliza datos personales sensibles reales.</p>
+            
+            <h4>Metadatos</h4>
+            <p class="small">Clave: nombre_meta, fecha_creacion, monto_objetivo, meses, interes_mensual, ahorro_mensual, total_aportado, saldo_final, tabla_mes_a_mes (array)</p>
+            
+            <h4>Columnas / atributos</h4>
+            <table>
+              <thead><tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr></thead>
+              <tbody>
+                <tr><td>mes</td><td>int</td><td>Mes del periodo (1..n)</td></tr>
+                <tr><td>aporte</td><td>float</td><td>Aporte mensual calculado</td></tr>
+                <tr><td>saldo</td><td>float</td><td>Saldo acumulado al finalizar el mes</td></tr>
+                <tr><td>intereses</td><td>float</td><td>Intereses acumulados (si aplica)</td></tr>
+              </tbody>
+            </table>
+          </article>
+        </div>
+
+        <!-- PÁGINA API DATOS ABIERTOS -->
+        <div id="page-api" class="page-hidden">
+          <article class="card section">
+            <h2>Integración API Datos Abiertos Colombia</h2>
+            <p class="lead">Visualización de datos públicos del portal datos.gov.co. Esta sección consume datos en tiempo real y genera gráficas interactivas.</p>
+            
+            <div class="stat-grid">
+              <div class="stat-card">
+                <div class="stat-label">Estado API</div>
+                <div class="stat-value" id="apiStatus">...</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Registros</div>
+                <div class="stat-value" id="recordCount">0</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Última actualización</div>
+                <div class="stat-value" style="font-size:14px" id="lastUpdate">-</div>
               </div>
             </div>
+          </article>
+
+          <article class="card section">
+            <h3>Configuración de API</h3>
+            <label>URL del Dataset (JSON)</label>
+            <input type="text" id="apiUrl" value="https://www.datos.gov.co/resource/kx2f-xjdq.json" placeholder="URL de la API">
+            <div style="height:12px"></div>
+            <div class="actions">
+              <button class="btn btn-primary" onclick="loadApiData()">Cargar Datos</button>
+              <button class="btn btn-ghost" onclick="clearCharts()">Limpiar</button>
+            </div>
+            <div style="height:12px"></div>
+            <div id="apiMessage"></div>
+          </article>
+
+          <article class="card section">
+            <h3>Resumen de Datos</h3>
+            <div id="dataSummary" class="small" style="color:var(--muted)">
+              Cargue datos para ver el resumen...
+            </div>
+          </article>
+
+          <article class="card section">
+            <h3>Gráfica 1: Distribución por Categoría</h3>
+            <div class="chart-container">
+              <canvas id="chart1"></canvas>
+            </div>
+          </article>
+
+          <article class="card section">
+            <h3>Gráfica 2: Series de Tiempo</h3>
+            <div class="chart-container">
+              <canvas id="chart2"></canvas>
+            </div>
+          </article>
+
+          <article class="card section">
+            <h3>Gráfica 3: Comparativa (Top 10)</h3>
+            <div class="chart-container">
+              <canvas id="chart3"></canvas>
+            </div>
+          </article>
+
+          <article class="card section">
+            <h3>Tabla de Datos (Primeros 20 registros)</h3>
+            <div style="overflow-x:auto">
+              <table id="dataTable">
+                <thead id="tableHead"></thead>
+                <tbody id="tableBody"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card section">
+            <h3>Documentación de la API</h3>
+            <p class="small">La API de datos.gov.co utiliza el estándar Socrata Open Data API (SODA). Para obtener datos:</p>
+            <div class="code-block">// Ejemplo de URL
+https://www.datos.gov.co/resource/[ID_DATASET].json
+
+// Con filtros
+https://www.datos.gov.co/resource/[ID_DATASET].json?$limit=1000
+
+// Con selección de campos
+https://www.datos.gov.co/resource/[ID_DATASET].json?$select=campo1,campo2</div>
+            
+            <h4>Parámetros útiles:</h4>
+            <ul class="small">
+              <li><strong>$limit:</strong> Número de registros a retornar (máx 50000)</li>
+              <li><strong>$offset:</strong> Punto de inicio para paginación</li>
+              <li><strong>$where:</strong> Filtros SQL-like (ej: year > 2020)</li>
+              <li><strong>$order:</strong> Ordenamiento (ej: fecha DESC)</li>
+              <li><strong>$select:</strong> Campos específicos a retornar</li>
+            </ul>
+          </article>
+        </div>
+
+        <!-- PÁGINA CONTEXTO -->
+        <div id="page-contexto" class="page-hidden">
+          <article class="card section">
+            <h2>Descripción del Contexto</h2>
+            <h3>El sector</h3>
+            <p class="small">Sector terciario, área financiera. Incluye bancos, cooperativas, fintech y servicios de educación financiera. En Colombia, el sector financiero es un motor clave de inclusión y del crecimiento económico regional.</p>
+            
+            <h3>Su importancia</h3>
+            <p class="small">Este sector es crucial para el desarrollo económico, ya que impulsa la inversión, el consumo y el ahorro. Contribuye al crecimiento del empleo, financia proyectos de infraestructura y da soporte al sistema de pagos.</p>
+            
+            <h3>Impacto en la región</h3>
+            <p class="small">Tanto a nivel nacional como regional en departamentos como el Valle del Cauca, herramientas de educación financiera pueden mejorar acceso a productos de ahorro, incentivar emprendimiento y reducir la fragilidad financiera de hogares.</p>
+            
+            <h3>Necesidad - problema - idea de transformación</h3>
+            <p class="small">Problema: muchos usuarios no tienen herramientas sencillas para cuantificar y visualizar cómo alcanzar metas de ahorro. Idea: transformar la educación financiera ofreciendo una herramienta simple, local y replicable que facilite la toma de decisiones y fomente el hábito del ahorro.</p>
+          </article>
+        </div>
+
+        <!-- PÁGINA FORMULARIOS -->
+        <div id="page-formularios" class="page-hidden">
+          <article class="card section">
+            <h2>Formularios de Datos</h2>
+            <p class="lead">El sitio incluye un formulario principal para crear metas de ahorro. Campos obligatorios y validaciones están implementados en el frontend (HTML/JS).</p>
+            <h4>Campos del formulario</h4>
+            <ul class="small">
+              <li>Nombre de la meta (texto)</li>
+              <li>Monto objetivo (numérico, COP)</li>
+              <li>Plazo en meses (entero)</li>
+              <li>Aplicar interés (checkbox) y tasa mensual (%)</li>
+            </ul>
+            <h4>Validaciones</h4>
+            <p class="small">Validación de entradas no nulas, valores positivos y rangos razonables para el interés (0-100%). Mensajes de alerta para entradas inválidas.</p>
+          </article>
+        </div>
+
+        <!-- PÁGINA PRODUCTO -->
+        <div id="page-producto" class="page-hidden">
+          <article class="card section">
+            <h2>El Producto de Datos</h2>
+            <p class="lead">Producto generado: para cada meta se produce un paquete de datos que incluye el ahorro mensual requerido, la tabla mes a mes y el reporte gráfico.</p>
+            <h4>Formatos de salida</h4>
+            <ul class="small">
+              <li>CSV (tabla mes a mes)</li>
+              <li>JSON (registro de la meta y tabla)</li>
+              <li>Gráfica interactiva en la interfaz (Chart.js)</li>
+            </ul>
+          </article>
+        </div>
+
+        <!-- PÁGINA PYTHON (AHORA CON GRÁFICOS INTERACTIVOS) -->
+        <div id="page-python" class="page-hidden">
+            <article class="card section">
+                <div class="tool-icon" style="background:linear-gradient(135deg, #36a2eb, #ffce56);">Py</div>
+                <h2>Dashboard de Inclusión Financiera en Colombia</h2>
+                <p class="lead">Visualización interactiva de datos de la API de Datos Abiertos de Colombia sobre inclusión financiera por género dada por Google Colab.</p>
+            </article>
+            
+            <div id="loading-message" class="card loading">
+                <p>  <img src="foto4.jpg" alt="Dataset ejemplo 1" style="width:100%; border-radius:8px; border:1px solid rgba(255,255,255,0.1)" title="Dataset"></p>
+            </div>
+            <br>
+            <br>
+            <div id="loading-message" class="card loading">
+                <p>  <img src="foto5.jpg" alt="Dataset ejemplo 1" style="width:100%; border-radius:8px; border:1px solid rgba(255,255,255,0.1)" title="Dataset"></p>
+            </div>
+            <div id="loading-message" class="card loading">
+                <p>  <img src="foto6.jpg" alt="Dataset ejemplo 1" style="width:100%; border-radius:8px; border:1px solid rgba(255,255,255,0.1)" title="Dataset"></p>
+            </div>
+            <br>
+            <br>
+            <div id="loading-message" class="card loading">
+                <p>  <img src="foto7.jpg" alt="Dataset ejemplo 1" style="width:100%; border-radius:8px; border:1px solid rgba(255,255,255,0.1)" title="Dataset"></p>
+            </div>
+            <div id="loading-message" class="card loading">
+                <p>  <img src="foto8.jpg" alt="Dataset ejemplo 1" style="width:100%; border-radius:8px; border:1px solid rgba(255,255,255,0.1)" title="Dataset"></p>
+            </div>
+            <br>
+            <br>
+            <div id="loading-message" class="card loading">
+                <p>  <img src="foto9.jpg" alt="Dataset ejemplo 1" style="width:100%; border-radius:8px; border:1px solid rgba(255,255,255,0.1)" title="Dataset"></p>
+            </div>
+        </div>
+
+
+        <!-- PÁGINA POWER BI -->
+        <div id="page-powerbi" class="page-hidden">
+          <article class="card section">
+            <div class="tool-icon">BI</div>
+            <h2>Visualización con Power BI</h2>
+            <p class="lead">Creación de dashboards interactivos para el análisis de informacion realacionada para la ayuda de la creacion de metas de ahorro utilizando Microsoft Power BI.</p>
+          </article>
+
+          <div class="tool-card">
+            <h3>Pasos para importar datos</h3>
+            <ol class="small">
+              <li>Exportar datos desde Python o CSV</li>
+              <li>Abrir Power BI Desktop</li>
+              <li>Obtener datos como Archivo CSV</li>
+              <li>Seleccionar el archivo exportado</li>
+            </ol>
           </div>
 
-          <div style="margin-top:12px" class="card">
-            <strong>Tabla mes a mes</strong>
-            <div id="tableContainer">—</div>
+          <article class="card">
+            <h4>Visualizaciones recomendadas</h4>
+            <ul class="small">
+              <li><strong>Gráfico de líneas</strong> </li>
+              <li><strong>Gráfico de columnas apiladas</strong> </li>
+              <li><strong>Tarjetas:</strong> </li>
+              <li><strong>Tabla</strong> </li>
+              <li><strong>Medidor</strong> </li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h4>Dashboard obtenido</h4>
+            <div class="code-block"> <img src="foto3.jpg" alt="dashboard" style="width:100%; border-radius:8px; border:1px solid rgba(255,255,255,0.1)" title="Dataset"></div>
+          </article>
+        </div>
+
+        <!-- PÁGINA LOOKER STUDIO -->
+        <div id="page-looker" class="page-hidden">
+          <article class="card section">
+            <div class="tool-icon">LS</div>
+            <h2>Reportes con Looker Studio</h2>
+            <p class="lead">Creación de reportes dinámicos y compartibles con Google Looker Studio (anteriormente Data Studio).</p>
+          </article>
+
+          <div class="tool-card">
+            <h3>Conectar fuentes de datos</h3>
+            <ol class="small">
+              <li>Subir CSV a Google Drive o Google Sheets</li>
+              <li>Acceder a Looker Studio (lookerstudio.google.com)</li>
+              <li>Crear → Informe</li>
+              <li>Agregar datos → Hojas de cálculo de Google o Subir archivo</li>
+              <li>Seleccionar la fuente y configurar campos</li>
+            </ol>
           </div>
 
-          <div style="margin-top:12px" class="card">
-            <strong>Gráfica</strong>
-            <canvas id="chartCanvas" style="width:100%; height:240px"></canvas>
-          </div>
+          <article class="card">
+            <h4>Componentes recomendados</h4>
+            <ul class="small">
+              <li><strong>Gráfico de series temporales</strong> </li>
+              <li><strong>Tarjetas de resumen</strong></li>
+              <li><strong>Gráfico de área</strong> </li>
+              <li><strong>Tabla con barras</strong> </li>
+              <li><strong>Medidor radial</strong> </li>
+            </ul>
+          </article>
 
-          <div style="margin-top:8px; display:flex; gap:8px">
-            <button class="btn btn-ghost" id="exportCsv">Exportar CSV</button>
-            <button class="btn btn-ghost" id="deleteMeta" style="color:#ef4444">Eliminar</button>
-          </div>
-        </article>
+          <article class="card">
+            <h4>Dashboard</h4>
+            <div class="code-block"><img src="foto10.jpg" alt="dashboard" style="width:100%; border-radius:8px; border:1px solid rgba(255,255,255,0.1)" title="Dataset"></div>
+            <p class="small" style="margin-top:12px"><em></em></p>
+          </article>
+
+          
+        </div>
+
+        <!-- PÁGINA NOSOTROS -->
+        <div id="page-nosotros" class="page-hidden">
+          <article class="card section">
+            <h2>Nosotros</h2>
+            <p class="small">Proyecto académico desarrollado por estudiantes de la Universidad Libre Seccional Cali como parte de las asignaturas de Lógica, Algoritmos y Fundamentos de Programación.</p>
+            <p class="small"><strong>Autores:</strong> Samuel Alejandro Ortiz Zambrano · Miguel Ángel Carmona Muñoz</p>
+          </article>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Flag para asegurar que los gráficos de Python se carguen solo una vez
+    let pythonChartsLoaded = false;
+
+    // Control del dropdown
+    function toggleDropdown() {
+      const dropdown = document.getElementById('datosDropdown');
+      dropdown.classList.toggle('active');
+    }
+
+    // Cerrar dropdown al hacer clic fuera
+    document.addEventListener('click', function(e) {
+      const dropdown = document.getElementById('datosDropdown');
+      if (!dropdown.contains(e.target)) {
+        dropdown.classList.remove('active');
+      }
+    });
+
+    // Control de páginas
+    function showPage(pageName) {
+      // Ocultar todas las páginas
+      const pages = ['home', 'dataset', 'api', 'contexto', 'formularios', 'producto', 'python', 'powerbi', 'looker', 'nosotros'];
+      pages.forEach(page => {
+        const element = document.getElementById('page-' + page);
+        if (element) {
+          element.classList.add('page-hidden');
+        }
+      });
+
+      // Mostrar la página solicitada
+      const targetPage = document.getElementById('page-' + pageName);
+      if (targetPage) {
+        targetPage.classList.remove('page-hidden');
+      }
+
+      // Cargar los gráficos de la página Python si es la primera vez que se muestra
+      if (pageName === 'python' && !pythonChartsLoaded) {
+          fetchAndDrawPythonCharts();
+      }
+
+      // Cerrar dropdown si está abierto
+      const dropdown = document.getElementById('datosDropdown');
+      dropdown.classList.remove('active');
+
+      // Scroll al inicio
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+  // --- LÓGICA PARA LA PÁGINA "API DATOS ABIERTOS" ---
+    let chart1, chart2, chart3;
+    let apiData = [];
+
+    async function loadApiData() {
+      const url = document.getElementById('apiUrl').value;
+      const msgDiv = document.getElementById('apiMessage');
+      const statusEl = document.getElementById('apiStatus');
+      const countEl = document.getElementById('recordCount');
+      const updateEl = document.getElementById('lastUpdate');
+
+      if (!url.trim()) {
+        msgDiv.innerHTML = '<div class="error">✗ Por favor ingrese una URL válida</div>';
+        return;
+      }
+
+      try {
+        msgDiv.innerHTML = '<div style="color:var(--muted)">⏳ Cargando datos...</div>';
+        statusEl.textContent = 'Conectando...';
+
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+
+        apiData = await response.json();
+
+        statusEl.textContent = '✓ Conectado';
+        statusEl.style.color = 'var(--accent)';
+        countEl.textContent = apiData.length.toLocaleString();
+        updateEl.textContent = new Date().toLocaleString('es-CO');
+
+        processAndVisualize(apiData);
+        msgDiv.innerHTML = '<div class="success">✓ Datos cargados correctamente</div>';
+
+      } catch (error) {
+        msgDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+        statusEl.textContent = '✗ Error';
+        statusEl.style.color = '#ef4444';
+        console.error('Error:', error);
+      }
+    }
+
+    function processAndVisualize(data) {
+      if (!data || data.length === 0) {
+        document.getElementById('dataSummary').innerHTML = '<div class="error">No hay datos para procesar</div>';
+        return;
+      }
+
+      generateSummary(data);
+      createCharts(data);
+      fillTable(data);
+    }
+
+    function generateSummary(data) {
+      const summaryDiv = document.getElementById('dataSummary');
+      const keys = Object.keys(data[0] || {});
+      const numFields = keys.length;
+
+      let html = `<strong>Resumen:</strong><br>`;
+      html += `• Total de registros: ${data.length}<br>`;
+      html += `• Campos disponibles: ${numFields}<br>`;
+      html += `• Campos: ${keys.slice(0, 8).join(', ')}${keys.length > 8 ? '...' : ''}`;
+
+      summaryDiv.innerHTML = html;
+    }
+
+    function createCharts(data) {
+      clearCharts();
+
+      const keys = Object.keys(data[0] || {});
+      const firstKey = keys[0];
+      const secondKey = keys[1];
+
+      // Gráfica 1: Distribución por categoría (primeros 10)
+      if (firstKey) {
+        const grouped = {};
+        data.forEach(row => {
+          const val = row[firstKey];
+          grouped[val] = (grouped[val] || 0) + 1;
+        });
+
+        const sorted = Object.entries(grouped)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 10);
+
+        const ctx1 = document.getElementById('chart1').getContext('2d');
+        chart1 = new Chart(ctx1, {
+          type: 'bar',
+          data: {
+            labels: sorted.map(x => String(x[0]).substring(0, 30)),
+            datasets: [{
+              label: `Frecuencia de ${firstKey}`,
+              data: sorted.map(x => x[1]),
+              backgroundColor: 'rgba(45, 212, 191, 0.8)'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: '#94a3b8' } } },
+            scales: {
+              x: { ticks: { color: '#94a3b8', font: { size: 10 } } },
+              y: { ticks: { color: '#94a3b8' } }
+            }
+          }
+        });
+      }
+
+      // Gráfica 2: Serie de tiempo (primeros 20 registros)
+      if (secondKey) {
+        const labels = data.slice(0, 20).map((_, i) => `Reg ${i + 1}`);
+        const values = data.slice(0, 20).map(row => {
+          const val = row[secondKey];
+          return isNaN(val) ? 0 : parseFloat(val);
+        });
+
+        const ctx2 = document.getElementById('chart2').getContext('2d');
+        chart2 = new Chart(ctx2, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: secondKey,
+              data: values,
+              borderColor: 'rgba(96, 165, 250, 0.9)',
+              backgroundColor: 'rgba(96, 165, 250, 0.2)',
+              tension: 0.4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: '#94a3b8' } } },
+            scales: {
+              x: { ticks: { color: '#94a3b8' } },
+              y: { ticks: { color: '#94a3b8' } }
+            }
+          }
+        });
+      }
+
+      // Gráfica 3: Comparativa (campos numéricos top 10)
+      const numericKeys = keys.filter(k => {
+        const val = data[0][k];
+        return !isNaN(val) && val !== null && val !== '';
+      }).slice(0, 2);
+
+      if (numericKeys.length >= 2) {
+        const grouped3 = {};
+        data.forEach(row => {
+          const cat = row[firstKey];
+          if (!grouped3[cat]) grouped3[cat] = { a: 0, b: 0 };
+          grouped3[cat].a += parseFloat(row[numericKeys[0]]) || 0;
+          grouped3[cat].b += parseFloat(row[numericKeys[1]]) || 0;
+        });
+
+        const top10_3 = Object.entries(grouped3)
+          .sort((a, b) => (b[1].a + b[1].b) - (a[1].a + a[1].b))
+          .slice(0, 10);
+
+        const ctx3 = document.getElementById('chart3').getContext('2d');
+        chart3 = new Chart(ctx3, {
+          type: 'bar',
+          data: {
+            labels: top10_3.map(x => String(x[0]).substring(0, 20)),
+            datasets: [
+              {
+                label: numericKeys[0],
+                data: top10_3.map(x => x[1].a),
+                backgroundColor: 'rgba(45, 212, 191, 0.7)'
+              },
+              {
+                label: numericKeys[1],
+                data: top10_3.map(x => x[1].b),
+                backgroundColor: 'rgba(236, 72, 153, 0.7)'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: '#94a3b8' } } },
+            scales: {
+              x: { ticks: { color: '#94a3b8', font: { size: 10 } } },
+              y: { ticks: { color: '#94a3b8' } }
+            }
+          }
+        });
+      }
+    }
+
+    function fillTable(data) {
+      const thead = document.getElementById('tableHead');
+      const tbody = document.getElementById('tableBody');
+
+      thead.innerHTML = '';
+      tbody.innerHTML = '';
+
+      if (data.length === 0) return;
+
+      const keys = Object.keys(data[0]);
+      const headerRow = document.createElement('tr');
+      keys.forEach(key => {
+        const th = document.createElement('th');
+        th.textContent = key;
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+
+      data.slice(0, 20).forEach(row => {
+        const tr = document.createElement('tr');
+        keys.forEach(key => {
+          const td = document.createElement('td');
+          td.textContent = row[key] || '-';
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function clearCharts() {
+      if (chart1) { chart1.destroy(); chart1 = null; }
+      if (chart2) { chart2.destroy(); chart2 = null; }
+      if (chart3) { chart3.destroy(); chart3 = null; }
+
+      document.getElementById('dataSummary').innerHTML = 'Cargue datos para ver el resumen...';
+      document.getElementById('tableHead').innerHTML = '';
+      document.getElementById('tableBody').innerHTML = '';
+      document.getElementById('apiMessage').innerHTML = '';
+    }
+    // Mostrar página de inicio por defecto
+    document.addEventListener('DOMContentLoaded', () => {
+        showPage('home');
+    });
+  </script>
+</body>
+</html>
+
