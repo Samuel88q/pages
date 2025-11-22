@@ -77,7 +77,39 @@
           <a href="#" onclick="showPage('contexto'); return false;">Contexto</a>
           <a href="#" onclick="showPage('formularios'); return false;">Formularios</a>
           <a href="#" onclick="showPage('producto'); return false;">Producto</a>
-          
+          <button id="btn-dashboard" class="nav-btn">Ver Dashboard</button>
+
+<style>
+  .nav-btn {
+    background-color: #1e293b;   /* mismo fondo gris azulado */
+    color: #e2e8f0;              /* texto claro */
+    padding: 10px 22px;
+    border: none;
+    border-radius: 9999px;       /* pill */
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    transition: background-color 0.25s ease, transform 0.2s ease;
+  }
+
+  .nav-btn:hover {
+    background-color: #334155;   /* igual al hover del menú */
+    transform: translateY(-1px);
+  }
+
+  /* Si quieres que se vea como el botón ACTIVO del menú */
+  .nav-btn.active {
+    background-color: #0ea5e9;   /* azul claro del menú activo */
+    color: white;
+  }
+</style>
+
+<script>
+  document.getElementById("btn-dashboard").onclick = function() {
+    window.location.href = "https://mi-dashboard-financiero.onrender.com";
+  };
+</script>
+
           <div class="dropdown" id="datosDropdown">
             <a class="dropdown-toggle" onclick="toggleDropdown(); return false;">
               Datos
